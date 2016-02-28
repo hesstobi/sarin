@@ -1,0 +1,80 @@
+#!/usr/bin/env ruby
+
+
+require 'sarin'
+require 'clamp'
+
+Clamp do
+
+	option ["-o", "--output_file"], "OUTPUT_FILE", "specify the output file"
+	option ["-p", "--position"], "POSITION", "specify the postion of the activity circle in the format lat,lon e.g.: 51.049238,13.745206"
+	option ["-r", "--radius"], "RADIUS", "specify the radius of the activity circle in m", :attribute_name => :rad , :default => 100.0 do |val|
+		val.to_f
+	end
+	option ["-c", "--city"], "CITY" , "specify a cities roundabout traffic for your activity"
+	parameter "FILE ...", "input files", :attribute_name => :files
+
+	def execute
+
+		output_files = Array.new()
+		if output_file
+			if files.size <= 1
+				output_files << File.basename(output_file,'slf') + 'slf'
+			else
+				files.each_with_index {|file,idx|
+					output_files << File.basename(output_file,'.slf') + idx.to_s + '.slf'
+				}
+			end
+		else
+			output_files = files
+		end
+
+		ref_lat = false
+		ref_lon = false
+
+		if position
+			center = position.split(',').collect {|x| x.to_f}
+			ref_lat = center[0]
+			ref_lon = center[1]
+		end
+
+		radius = rad
+
+		if city
+			if position
+				puts "The values of radius and possition will overwriten by your choosen city " + city
+			end
+
+			case city.downcase
+			when "dresden", "dd", "drs"
+				radius = 65.0
+				ref_lat = 51.062862
+				ref_lon = 13.746216
+			when "berlin", "B"
+				radius = 70.0
+				ref_lat = 52.514538
+				ref_lon = 13.350111
+			when "paris"
+				radius = 70.0
+				ref_lat = 48.873787
+				ref_lon = 2.295051
+			when "nardo"
+				radius = 2000.0
+				ref_lat = 40.327412
+				ref_lon = 17.826357
+
+			else
+				puts "Unknown city! Choose between Dresden, Berlin, Paris, Nardo"
+				exit
+			end
+
+
+		end
+
+		files.each_with_index { |file,idx|
+			converter = Sarin::SLFHometrainerConverter.new(file,output_files[idx],radius,ref_lat,ref_lon)
+			converter.correct_positions
+		}
+	end
+
+end
