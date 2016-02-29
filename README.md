@@ -8,7 +8,13 @@ But the GPS-Positions will be all on one place (or near on place). If you share 
 be shown wrong speeds and distance. Because Strava will recalculate these values from the GPS-Positions.
 Thus if you redefine the position with this tool you get a nice log on [Strava](https://www.strava.com)
 
-TODO: Examble Picutures
+**Original Log:** 0.3km
+
+![Orginal Log](https://cloud.githubusercontent.com/assets/929957/13409421/4451de82-df33-11e5-8f8c-f83c1e6a8680.png)
+
+**Converted Log:** 24km
+
+![Converted Log](https://cloud.githubusercontent.com/assets/929957/13409428/48a839ae-df33-11e5-8e6f-4a35af6d7963.png)
 
 ## Installation
 
